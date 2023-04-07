@@ -7,7 +7,7 @@ terraform {
   }
   backend "azurerm" {
     resource_group_name = "Terraform-POC"
-    storage_account_name = "terraformpocidentitytest"
+    storage_account_name = "terraformpocinspyretest"
     container_name = "state"
     key = "terraform.state"
   }
