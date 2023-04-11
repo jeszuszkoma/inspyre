@@ -23,16 +23,16 @@ resource "azurerm_resource_group" "Case1" {
   location = "West Europe"
 }
 
-#Create AKS Cluster
+# Create AKS Cluster
 resource "azurerm_kubernetes_cluster" "inspyre" {
   name = "Inspyre"
   location = azurerm_resource_group.Case1.location
   resource_group_name = azurerm_resource_group.Case1.name
 
-  #DNS prefix for AKS will be inspyre-cluster-dns.weseurope.cloudapp.azure.com
+  # DNS prefix for AKS will be inspyre-cluster-dns.weseurope.cloudapp.azure.com
   dns_prefix = "inspyre-cluster-dns"
 
-  #Specify the admin profile to the AKS
+  # Specify the admin profile to the AKS
   linux_profile {
     admin_username = "inspyre"
 
@@ -41,7 +41,7 @@ resource "azurerm_kubernetes_cluster" "inspyre" {
     }
   }
 
-  #Agent configuration
+  # Agent configuration
   agent_pool_profile {
     name = "aks-inspyre"
     count = 1
@@ -51,7 +51,7 @@ resource "azurerm_kubernetes_cluster" "inspyre" {
     availability_zones = ["Add the availability zone"]
   }
 
-  #Secret
+  # Secret
   service_principal {
     client_id =  "client id"
     client_secret = "client secret"
@@ -62,28 +62,27 @@ resource "azurerm_kubernetes_cluster" "inspyre" {
   ]
 }
 
-#Kubernetes namespace
+# Kubernetes namespace
 resource "kubernetes_namespace" "nginx" {
   metadata {
     name = "nginx"
   }
 }
 
-#Nginx Helm Repo
+# Nginx Helm Repo
 resource "helm_repository" "nginx" {
   name = "nginx-stable"
   url = "https://helm.nginx.com/stable"
 }
 
-#Nginx Helm Chart
+# Nginx Helm Chart
 resource "helm_release" "nginx" {
   name = "nginx-ingress"
   repository = "helm_repository.nginx.metadata[0].name"
   chart = "nginx-ingress"
   namespace = kubernetes_namespace.nginx.metadata[0].name
 
-
-  #Set controller.service.type to Internal => Internal load balancer
+  # Set controller.service.type to Internal => Internal load balancer
   set {
     name = "controller.service.type"
     value = "Internal"
